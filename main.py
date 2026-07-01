@@ -7,13 +7,17 @@ global exception handlers.
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request, status
+import traceback
+from fastapi import FastAPI, Request, status, BackgroundTasks, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.v1.router import router as v1_router
 from config import settings
-from db.base import init_db
+from db.base import init_db, get_db
+from services.email import alert_admin_error
 
 # ─── Logging ─────────────────────────────────────────────────────────────────
 
@@ -75,9 +79,18 @@ async def value_error_handler(request: Request, exc: ValueError):
 @app.exception_handler(Exception)
 async def generic_exception_handler(request: Request, exc: Exception):
     _logger.exception("Unhandled exception on %s %s", request.method, request.url)
+    
+    error_trace = "".join(traceback.format_exception(type(exc), exc, exc.__traceback__))
+    bg_tasks = BackgroundTasks()
+    bg_tasks.add_task(alert_admin_error, f"Global Exception on {request.method} {request.url}\n\n{error_trace}")
+
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={"success": False, "message": "An internal server error occurred."},
+        content={
+            "success": False, 
+            "message": "Our system is currently facing an issue. We have notified the authority and will get back to you shortly."
+        },
+        background=bg_tasks
     )
 
 
@@ -89,8 +102,24 @@ app.include_router(v1_router)
 # ─── Health check ─────────────────────────────────────────────────────────────
 
 @app.get("/health", tags=["Health"])
-async def health():
-    return {"status": "ok", "env": settings.app_env, "version": "1.0.0"}
+async def health(db: AsyncSession = Depends(get_db)):
+    try:
+        await db.execute(text("SELECT 1"))
+        return {"status": "healthy", "env": settings.app_env, "version": "1.0.0"}
+    except Exception as e:
+        _logger.error("Health check DB failure: %s", e)
+        error_trace = "".join(traceback.format_exception(type(e), e, e.__traceback__))
+        bg_tasks = BackgroundTasks()
+        bg_tasks.add_task(alert_admin_error, f"Health Check Database Failure:\n\n{error_trace}")
+        
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content={
+                "success": False, 
+                "message": "Our system is currently facing an issue. We have notified the authority and will get back to you shortly."
+            },
+            background=bg_tasks
+        )
 
 
 @app.get("/api/v1/info", tags=["Health"])

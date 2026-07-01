@@ -32,6 +32,13 @@ class Settings(BaseSettings):
     fb_graph_api_version: str = "v19.0"
     fb_default_post_limit: int = 25
 
+    # Email Alerting
+    admin_email: str = "admin@example.com"
+    smtp_server: str = ""
+    smtp_port: int = 587
+    smtp_username: str = ""
+    smtp_password: str = ""
+
     @property
     def fb_graph_base_url(self) -> str:
         return f"https://graph.facebook.com/{self.fb_graph_api_version}"

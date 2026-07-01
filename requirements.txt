@@ -4,6 +4,7 @@ uvicorn[standard]==0.32.0
 
 # ─── Database (async SQLite for dev, swap URL for PostgreSQL in prod) ────────
 sqlalchemy>=2.0.40        # 2.0.40+ required for Python 3.14 Union type fix
+greenlet
 aiosqlite==0.20.0
 asyncpg==0.31.0
 
