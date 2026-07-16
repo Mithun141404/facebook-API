@@ -98,3 +98,5 @@ class Comment(Base):
 
     # Relationships
     post: Mapped["Post"] = relationship("Post", back_populates="comments")
+
+

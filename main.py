@@ -35,7 +35,9 @@ async def lifespan(app: FastAPI):
     _logger.info("Starting Facebook CRM API (env=%s)", settings.app_env)
     await init_db()
     _logger.info("Database initialised.")
+    
     yield
+    
     _logger.info("Shutting down Facebook CRM API.")
 
 

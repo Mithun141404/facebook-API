@@ -39,6 +39,9 @@ class Settings(BaseSettings):
     smtp_username: str = ""
     smtp_password: str = ""
 
+    # Proxy API
+    laravel_backend_url: str = "http://localhost:8000"
+
     @property
     def fb_graph_base_url(self) -> str:
         return f"https://graph.facebook.com/{self.fb_graph_api_version}"
