@@ -1,3 +1,4 @@
+from typing import List, Optional, Dict, Any
 """
 SQLAlchemy async engine, session factory, and declarative Base.
 All DB models import Base from here.

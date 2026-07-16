@@ -1,4 +1,7 @@
+from typing import List, Optional, Dict, Any
 """Pydantic schemas for Campaigns."""
+from typing import Optional
+
 from datetime import datetime
 
 from pydantic import Field
@@ -7,14 +10,14 @@ from schemas.common import CamelModel
 
 class CampaignCreate(CamelModel):
     name: str = Field(..., min_length=1, max_length=255, examples=["Summer Sale 2025"])
-    description: str | None = None
+    description: Optional[str] = None
     active: bool = True
 
 
 class CampaignUpdate(CamelModel):
-    name: str | None = Field(default=None, max_length=255)
-    description: str | None = None
-    active: bool | None = None
+    name: Optional[str] = Field(default=None, max_length=255)
+    description: Optional[str] = None
+    active: Optional[bool] = None
 
 
 class CampaignStats(CamelModel):
@@ -27,7 +30,7 @@ class CampaignStats(CamelModel):
 class CampaignOut(CamelModel):
     id: int
     name: str
-    description: str | None
+    description: Optional[str]
     active: bool
     post_count: int
     engagement: int

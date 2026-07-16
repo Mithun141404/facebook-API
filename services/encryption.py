@@ -1,7 +1,10 @@
+from typing import List, Optional, Dict, Any
 """
 Fernet-based encryption helpers for storing Facebook access tokens securely at rest.
 Tokens are encrypted before being written to the DB and decrypted when read.
 """
+from typing import Optional
+
 import base64
 import logging
 
@@ -12,7 +15,7 @@ from config import settings
 _logger = logging.getLogger(__name__)
 
 
-def _get_fernet() -> Fernet | None:
+def _get_fernet() -> Optional[Fernet]:
     """Return a Fernet instance using the configured key, or None if not set."""
     key = settings.token_encrypt_key
     if not key:

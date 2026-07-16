@@ -1,4 +1,7 @@
+from typing import List, Optional, Dict, Any
 """Pydantic schemas for Facebook Page Configurations."""
+from typing import Optional
+
 from datetime import datetime
 
 from pydantic import Field
@@ -14,10 +17,10 @@ class PageConfigCreate(CamelModel):
 
 
 class PageConfigUpdate(CamelModel):
-    page_name: str | None = Field(default=None, max_length=255)
-    access_token: str | None = None
-    post_limit: int | None = Field(default=None, ge=1, le=100)
-    active: bool | None = None
+    page_name: Optional[str] = Field(default=None, max_length=255)
+    access_token: Optional[str] = None
+    post_limit: Optional[int] = Field(default=None, ge=1, le=100)
+    active: Optional[bool] = None
 
 
 class PageConfigOut(CamelModel):
@@ -37,4 +40,4 @@ class FetchResult(CamelModel):
     posts_created: int
     posts_updated: int
     comments_fetched: int
-    error: str | None = None
+    error: Optional[str] = None

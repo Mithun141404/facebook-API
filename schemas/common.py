@@ -1,4 +1,7 @@
+from typing import List, Optional, Dict, Any
 """Shared response envelope and base schemas."""
+from typing import Optional
+
 from typing import Any, Generic, TypeVar
 
 from pydantic import BaseModel, ConfigDict
@@ -20,10 +23,10 @@ class APIResponse(CamelModel, Generic[T]):
     """Standard JSON envelope for all API responses."""
     success: bool = True
     message: str = "OK"
-    data: T | None = None
+    data: Optional[T] = None
 
 
 class ErrorResponse(CamelModel):
     success: bool = False
     message: str
-    detail: Any | None = None
+    detail: Optional[Any] = None

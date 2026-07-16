@@ -1,3 +1,4 @@
+from typing import List, Optional, Dict, Any
 """
 Publish router — text posts, photo posts (file upload), and scheduled posts.
 """
@@ -32,7 +33,7 @@ async def _get_config(config_id: int, db: AsyncSession) -> PageConfig:
     return config
 
 
-def _scheduled_unix(scheduled_at: datetime | None) -> int | None:
+def _scheduled_unix(scheduled_at: Optional[datetime]) -> Optional[int]:
     """Convert a naive UTC datetime to a Unix timestamp for Facebook."""
     if not scheduled_at:
         return None
@@ -49,8 +50,8 @@ def _scheduled_unix(scheduled_at: datetime | None) -> int | None:
 async def publish_text(
     page_config_id: int = Form(..., alias="pageConfigId", description="DB ID of the page config"),
     message: str = Form(..., min_length=1, description="Post text content"),
-    campaign_id: int | None = Form(default=None, alias="campaignId"),
-    scheduled_at: datetime | None = Form(default=None, alias="scheduledAt", description="UTC datetime (ISO 8601) to schedule"),
+    campaign_id: Optional[int] = Form(default=None, alias="campaignId"),
+    scheduled_at: Optional[datetime] = Form(default=None, alias="scheduledAt", description="UTC datetime (ISO 8601) to schedule"),
     db: AsyncSession = Depends(get_db),
     _: str = Depends(require_api_key),
 ):
@@ -75,7 +76,7 @@ async def publish_text(
     fb_post_id = result.get("id", "")
     is_scheduled = bool(sched_unix)
 
-    local_id: int | None = None
+    local_id: Optional[int] = None
     if not is_scheduled and fb_post_id:
         # Immediately create a local record so the CRM can reference it
         post = Post(
@@ -102,15 +103,17 @@ async def publish_text(
 
 
 # ─── Photo Post ───────────────────────────────────────────────────────────────
+from typing import Optional
+
 
 
 @router.post("/photo", response_model=APIResponse[PublishResult])
 async def publish_photo(
     page_config_id: int = Form(..., alias="pageConfigId", description="DB ID of the page config"),
     image: UploadFile = File(..., description="Image file to upload (JPEG, PNG, GIF, WEBP)"),
-    caption: str | None = Form(default=None, description="Optional caption for the photo"),
-    campaign_id: int | None = Form(default=None, alias="campaignId"),
-    scheduled_at: datetime | None = Form(default=None, alias="scheduledAt", description="UTC datetime (ISO 8601) to schedule"),
+    caption: Optional[str] = Form(default=None, description="Optional caption for the photo"),
+    campaign_id: Optional[int] = Form(default=None, alias="campaignId"),
+    scheduled_at: Optional[datetime] = Form(default=None, alias="scheduledAt", description="UTC datetime (ISO 8601) to schedule"),
     db: AsyncSession = Depends(get_db),
     _: str = Depends(require_api_key),
 ):
@@ -155,7 +158,7 @@ async def publish_photo(
     fb_post_id = result.get("post_id") or result.get("id", "")
     is_scheduled = bool(sched_unix)
 
-    local_id: int | None = None
+    local_id: Optional[int] = None
     if not is_scheduled and fb_post_id:
         post = Post(
             fb_post_id=fb_post_id,

@@ -1,3 +1,4 @@
+from typing import List, Optional, Dict, Any
 """
 Contacts router — acts as a proxy to forward requests to Laravel.
 """

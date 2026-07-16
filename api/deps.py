@@ -1,3 +1,4 @@
+from typing import List, Optional, Dict, Any
 """
 Shared FastAPI dependencies.
 """

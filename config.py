@@ -1,3 +1,4 @@
+from typing import List, Optional, Dict, Any
 """
 Application settings loaded from .env via pydantic-settings.
 All config is centralised here — import `settings` anywhere.

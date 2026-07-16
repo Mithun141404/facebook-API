@@ -1,3 +1,4 @@
+from typing import List, Optional, Dict, Any
 """
 All Facebook Graph API calls are centralised here.
 These are pure async functions — no DB access, no FastAPI concerns.
@@ -18,7 +19,7 @@ GRAPH_BASE = settings.fb_graph_base_url
 # ─── Helpers ─────────────────────────────────────────────────────────────────
 
 
-def _parse_fb_datetime(raw: str | None) -> datetime | None:
+def _parse_fb_datetime(raw: Optional[str]) -> Optional[datetime]:
     """Parse a Facebook ISO 8601 datetime string to a naive UTC datetime."""
     if not raw:
         return None
@@ -43,7 +44,7 @@ def _raise_for_fb_error(response: httpx.Response) -> None:
 # ─── Posts ────────────────────────────────────────────────────────────────────
 
 
-async def fetch_posts(page_id: str, access_token: str, limit: int = 25) -> list[dict]:
+async def fetch_posts(page_id: str, access_token: str, limit: int = 25) -> List[dict]:
     """
     Fetch posts from a Facebook Page using the Graph API.
     Returns a list of post dicts ready for upsert into the DB.
@@ -55,7 +56,7 @@ async def fetch_posts(page_id: str, access_token: str, limit: int = 25) -> list[
         "limit": min(limit, 100),
     }
 
-    posts: list[dict] = []
+    posts: List[dict] = []
 
     async with httpx.AsyncClient(timeout=20.0) as client:
         while url:
@@ -93,7 +94,7 @@ async def fetch_posts(page_id: str, access_token: str, limit: int = 25) -> list[
 # ─── Comments ─────────────────────────────────────────────────────────────────
 
 
-async def fetch_comments(fb_post_id: str, access_token: str, limit: int = 50) -> list[dict]:
+async def fetch_comments(fb_post_id: str, access_token: str, limit: int = 50) -> List[dict]:
     """
     Fetch top-level comments for a single post.
     Returns a list of comment dicts ready for upsert.
@@ -107,7 +108,7 @@ async def fetch_comments(fb_post_id: str, access_token: str, limit: int = 50) ->
         "summary": "true",
     }
 
-    comments: list[dict] = []
+    comments: List[dict] = []
 
     async with httpx.AsyncClient(timeout=20.0) as client:
         response = await client.get(url, params=params)
@@ -136,7 +137,7 @@ async def publish_text_post(
     page_id: str,
     access_token: str,
     message: str,
-    scheduled_unix: int | None = None,
+    scheduled_unix: Optional[int] = None,
 ) -> dict:
     """
     Publish a plain-text post to a Facebook Page feed.
@@ -162,6 +163,8 @@ async def publish_text_post(
 
 
 # ─── Publish: Photo ───────────────────────────────────────────────────────────
+from typing import Optional, List
+
 
 
 async def publish_photo_post(
@@ -170,7 +173,7 @@ async def publish_photo_post(
     image_bytes: bytes,
     filename: str,
     caption: str = "",
-    scheduled_unix: int | None = None,
+    scheduled_unix: Optional[int] = None,
 ) -> dict:
     """
     Publish a photo post to a Facebook Page.

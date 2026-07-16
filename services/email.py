@@ -1,3 +1,4 @@
+from typing import List, Optional, Dict, Any
 import logging
 import smtplib
 from email.message import EmailMessage

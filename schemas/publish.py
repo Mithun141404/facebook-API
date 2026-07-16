@@ -1,4 +1,7 @@
+from typing import List, Optional, Dict, Any
 """Pydantic schemas for publishing posts to Facebook."""
+from typing import Optional
+
 from datetime import datetime
 
 from pydantic import Field, model_validator
@@ -8,8 +11,8 @@ from schemas.common import CamelModel
 class PublishTextRequest(CamelModel):
     page_config_id: int = Field(..., description="DB ID of the page config to publish to")
     message: str = Field(..., min_length=1, description="Post text content")
-    campaign_id: int | None = Field(default=None, description="Optional campaign to link this post to")
-    scheduled_at: datetime | None = Field(
+    campaign_id: Optional[int] = Field(default=None, description="Optional campaign to link this post to")
+    scheduled_at: Optional[datetime] = Field(
         default=None,
         description="UTC datetime to schedule the post. Must be 10+ min in the future, max 75 days.",
     )
@@ -29,9 +32,9 @@ class PublishTextRequest(CamelModel):
 
 class PublishPhotoRequest(CamelModel):
     page_config_id: int = Field(..., description="DB ID of the page config")
-    caption: str | None = Field(default=None, description="Optional photo caption")
-    campaign_id: int | None = None
-    scheduled_at: datetime | None = None
+    caption: Optional[str] = Field(default=None, description="Optional photo caption")
+    campaign_id: Optional[int] = None
+    scheduled_at: Optional[datetime] = None
 
     @model_validator(mode="after")
     def validate_schedule(self) -> "PublishPhotoRequest":
@@ -48,6 +51,6 @@ class PublishPhotoRequest(CamelModel):
 
 class PublishResult(CamelModel):
     fb_post_id: str
-    post_id: int | None = None          # local DB id if created immediately
+    post_id: Optional[int] = None          # local DB id if created immediately
     is_scheduled: bool = False
     message: str = "Published successfully"

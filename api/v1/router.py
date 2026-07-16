@@ -1,3 +1,4 @@
+from typing import List, Optional, Dict, Any
 """Master v1 router — includes all sub-routers."""
 from fastapi import APIRouter
 

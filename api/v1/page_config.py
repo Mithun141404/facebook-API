@@ -1,3 +1,4 @@
+from typing import List, Optional, Dict, Any
 """
 Page Config router — CRUD for Facebook Page credentials + manual fetch trigger.
 """
@@ -27,7 +28,7 @@ _logger = logging.getLogger(__name__)
 # ─── CRUD ────────────────────────────────────────────────────────────────────
 
 
-@router.get("", response_model=APIResponse[list[PageConfigOut]])
+@router.get("", response_model=APIResponse[List[PageConfigOut]])
 async def list_page_configs(
     db: AsyncSession = Depends(get_db),
     _: str = Depends(require_api_key),
@@ -119,6 +120,8 @@ async def delete_page_config(
 
 
 # ─── Fetch Trigger ────────────────────────────────────────────────────────────
+from typing import Optional, List
+
 
 
 @router.post("/{config_id}/fetch", response_model=APIResponse[FetchResult])
@@ -149,7 +152,7 @@ async def fetch_posts_for_config(
     for raw in raw_posts:
         fb_id = raw["fb_post_id"]
         existing_result = await db.execute(select(Post).where(Post.fb_post_id == fb_id))
-        existing: Post | None = existing_result.scalar_one_or_none()
+        existing: Optional[Post] = existing_result.scalar_one_or_none()
 
         if existing:
             existing.message = raw["message"]
@@ -182,7 +185,7 @@ async def fetch_posts_for_config(
                 existing_c_result = await db.execute(
                     select(Comment).where(Comment.fb_comment_id == c_id)
                 )
-                existing_c: Comment | None = existing_c_result.scalar_one_or_none()
+                existing_c: Optional[Comment] = existing_c_result.scalar_one_or_none()
 
                 if existing_c:
                     existing_c.message = rc["message"]
@@ -219,7 +222,7 @@ async def fetch_posts_for_config(
     return APIResponse(message="Fetch complete.", data=result)
 
 
-@router.post("/fetch-all", response_model=APIResponse[list[FetchResult]])
+@router.post("/fetch-all", response_model=APIResponse[List[FetchResult]])
 async def fetch_all_active_pages(
     db: AsyncSession = Depends(get_db),
     _: str = Depends(require_api_key),
@@ -234,7 +237,7 @@ async def fetch_all_active_pages(
     if not configs:
         return APIResponse(message="No active page configs found.", data=[])
 
-    results: list[FetchResult] = []
+    results: List[FetchResult] = []
 
     for config in configs:
         plain_token = decrypt_token(config.access_token)

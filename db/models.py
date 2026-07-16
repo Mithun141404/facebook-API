@@ -1,3 +1,4 @@
+from typing import List, Optional, Dict, Any
 """
 SQLAlchemy ORM models — all four core tables.
 Uses Optional[X] syntax for Python 3.14 compatibility with SQLAlchemy 2.0.x.

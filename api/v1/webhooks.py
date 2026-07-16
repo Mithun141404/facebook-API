@@ -1,3 +1,4 @@
+from typing import List, Optional, Dict, Any
 """
 Webhooks router — acts as a proxy to forward incoming Meta events to Laravel.
 """

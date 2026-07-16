@@ -1,6 +1,9 @@
+from typing import List, Optional, Dict, Any
 """
 Campaigns router — CRUD + live stats aggregation.
 """
+from typing import Optional, List
+
 import logging
 
 from fastapi import APIRouter, Depends, Form, HTTPException, status
@@ -17,7 +20,7 @@ router = APIRouter(prefix="/campaigns", tags=["Campaigns"])
 _logger = logging.getLogger(__name__)
 
 
-@router.get("", response_model=APIResponse[list[CampaignOut]])
+@router.get("", response_model=APIResponse[List[CampaignOut]])
 async def list_campaigns(
     db: AsyncSession = Depends(get_db),
     _: str = Depends(require_api_key),
@@ -31,7 +34,7 @@ async def list_campaigns(
 @router.post("", response_model=APIResponse[CampaignOut], status_code=status.HTTP_201_CREATED)
 async def create_campaign(
     name: str = Form(..., min_length=1, max_length=255),
-    description: str | None = Form(default=None),
+    description: Optional[str] = Form(default=None),
     active: bool = Form(default=True),
     db: AsyncSession = Depends(get_db),
     _: str = Depends(require_api_key),
@@ -64,9 +67,9 @@ async def get_campaign(
 @router.put("/{campaign_id}", response_model=APIResponse[CampaignOut])
 async def update_campaign(
     campaign_id: int,
-    name: str | None = Form(default=None, max_length=255),
-    description: str | None = Form(default=None),
-    active: bool | None = Form(default=None),
+    name: Optional[str] = Form(default=None, max_length=255),
+    description: Optional[str] = Form(default=None),
+    active: Optional[bool] = Form(default=None),
     db: AsyncSession = Depends(get_db),
     _: str = Depends(require_api_key),
 ):

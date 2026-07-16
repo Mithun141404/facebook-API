@@ -1,3 +1,4 @@
+from typing import List, Optional, Dict, Any
 """
 Posts router — list, get, assign campaign, soft-delete.
 Comments are nested under posts.
@@ -19,11 +20,11 @@ router = APIRouter(prefix="/posts", tags=["Posts"])
 _logger = logging.getLogger(__name__)
 
 
-@router.get("", response_model=APIResponse[list[PostOut]])
+@router.get("", response_model=APIResponse[List[PostOut]])
 async def list_posts(
-    page_config_id: int | None = Query(default=None, alias="pageConfigId"),
-    campaign_id: int | None = Query(default=None, alias="campaignId"),
-    active: bool | None = Query(default=True),
+    page_config_id: Optional[int] = Query(default=None, alias="pageConfigId"),
+    campaign_id: Optional[int] = Query(default=None, alias="campaignId"),
+    active: Optional[bool] = Query(default=True),
     skip: int = Query(default=0, ge=0),
     limit: int = Query(default=50, ge=1, le=200),
     db: AsyncSession = Depends(get_db),
@@ -103,9 +104,11 @@ async def delete_post(
 
 
 # ─── Comments sub-resource ───────────────────────────────────────────────────
+from typing import Optional, List
 
 
-@router.get("/{post_id}/comments", response_model=APIResponse[list[CommentOut]])
+
+@router.get("/{post_id}/comments", response_model=APIResponse[List[CommentOut]])
 async def list_comments(
     post_id: int,
     db: AsyncSession = Depends(get_db),

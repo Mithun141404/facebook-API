@@ -1,3 +1,4 @@
+from typing import List, Optional, Dict, Any
 """
 Facebook CRM API — FastAPI application entry point.
 
