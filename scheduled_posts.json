@@ -1,0 +1,72 @@
+[
+    {
+        "id": "1159738187222030_122128439979350050",
+        "page_config_id": 1,
+        "campaign_id": 2,
+        "message": "New schedule posts",
+        "scheduled_unix": 1785759600,
+        "scheduled_at": "2026-08-03T12:20:00+00:00",
+        "type": "text",
+        "state": "scheduled"
+    },
+    {
+        "id": "1159738187222030_122129205657350050",
+        "page_config_id": 1,
+        "campaign_id": 6,
+        "message": "Campaign 1",
+        "scheduled_unix": 1786020300,
+        "scheduled_at": "2026-08-06T12:45:00+00:00",
+        "type": "text",
+        "state": "scheduled"
+    },
+    {
+        "id": "1159738187222030_122129449947350050",
+        "page_config_id": 1,
+        "campaign_id": null,
+        "message": "hellllllllllllllllllllooooooooo!!!!!!!",
+        "scheduled_unix": 1786085700,
+        "scheduled_at": "2026-08-07T06:55:00+00:00",
+        "type": "text",
+        "state": "scheduled"
+    },
+    {
+        "id": "122129502747350050",
+        "page_config_id": 1,
+        "campaign_id": 5,
+        "message": "damm looks good",
+        "scheduled_unix": 1786104000,
+        "scheduled_at": "2026-08-07T12:00:00+00:00",
+        "type": "photo",
+        "state": "scheduled"
+    },
+    {
+        "id": "1159738187222030_122130184071350050",
+        "page_config_id": 1,
+        "campaign_id": 6,
+        "message": "post 2",
+        "scheduled_unix": 1786363860,
+        "scheduled_at": "2026-08-10T12:11:00+00:00",
+        "type": "text",
+        "state": "scheduled"
+    },
+    {
+        "id": "122130472557350050",
+        "page_config_id": 1,
+        "campaign_id": 6,
+        "message": "post",
+        "scheduled_unix": 1786527720,
+        "scheduled_at": "2026-08-12T09:42:00+00:00",
+        "type": "photo",
+        "state": "scheduled"
+    },
+    {
+        "id": "1159738187222030_122134391781350050",
+        "page_config_id": 1,
+        "campaign_id": 7,
+        "message": "Hi",
+        "scheduled_unix": 1787736780,
+        "scheduled_at": "2026-08-26T09:33:00+00:00",
+        "type": "text",
+        "state": "scheduled"
+    }
+]

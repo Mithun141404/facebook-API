@@ -91,6 +91,41 @@ async def fetch_posts(page_id: str, access_token: str, limit: int = 25) -> List[
     return posts
 
 
+async def delete_post(fb_post_id: str, access_token: str) -> dict:
+    """
+    Delete a post from Facebook Graph API permanently.
+    """
+    url = f"{GRAPH_BASE}/{fb_post_id}"
+    params = {"access_token": access_token}
+
+    async with httpx.AsyncClient(timeout=20.0) as client:
+        response = await client.delete(url, params=params)
+        _raise_for_fb_error(response)
+        
+    result = response.json()
+    _logger.info("Deleted post %s from Facebook — result: %s", fb_post_id, result)
+    return result
+
+
+async def edit_post(fb_post_id: str, access_token: str, message: str) -> dict:
+    """
+    Edit the caption of an existing post on Facebook.
+    """
+    url = f"{GRAPH_BASE}/{fb_post_id}"
+    payload = {
+        "message": message,
+        "access_token": access_token,
+    }
+
+    async with httpx.AsyncClient(timeout=20.0) as client:
+        response = await client.post(url, data=payload)
+        _raise_for_fb_error(response)
+        
+    result = response.json()
+    _logger.info("Edited post %s on Facebook — result: %s", fb_post_id, result)
+    return result
+
+
 # ─── Comments ─────────────────────────────────────────────────────────────────
 
 

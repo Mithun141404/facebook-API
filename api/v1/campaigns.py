@@ -33,17 +33,15 @@ async def list_campaigns(
 
 @router.post("", response_model=APIResponse[CampaignOut], status_code=status.HTTP_201_CREATED)
 async def create_campaign(
-    name: str = Form(..., min_length=1, max_length=255),
-    description: Optional[str] = Form(default=None),
-    active: bool = Form(default=True),
+    payload: CampaignCreate,
     db: AsyncSession = Depends(get_db),
     _: str = Depends(require_api_key),
 ):
     """Create a new campaign."""
     campaign = Campaign(
-        name=name,
-        description=description,
-        active=active,
+        name=payload.name,
+        description=payload.description,
+        active=payload.active,
     )
     db.add(campaign)
     await db.commit()
@@ -67,9 +65,7 @@ async def get_campaign(
 @router.put("/{campaign_id}", response_model=APIResponse[CampaignOut])
 async def update_campaign(
     campaign_id: int,
-    name: Optional[str] = Form(default=None, max_length=255),
-    description: Optional[str] = Form(default=None),
-    active: Optional[bool] = Form(default=None),
+    payload: CampaignUpdate,
     db: AsyncSession = Depends(get_db),
     _: str = Depends(require_api_key),
 ):
@@ -78,12 +74,12 @@ async def update_campaign(
     if not campaign:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Campaign not found.")
 
-    if name is not None:
-        campaign.name = name
-    if description is not None:
-        campaign.description = description
-    if active is not None:
-        campaign.active = active
+    if payload.name is not None:
+        campaign.name = payload.name
+    if payload.description is not None:
+        campaign.description = payload.description
+    if payload.active is not None:
+        campaign.active = payload.active
 
     await db.commit()
     await db.refresh(campaign)

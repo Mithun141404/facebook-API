@@ -12,9 +12,11 @@ from sqlalchemy.orm import selectinload
 
 from api.deps import require_api_key
 from db.base import get_db
-from db.models import Comment, Post
+from db.models import Comment, Post, PageConfig
 from schemas.common import APIResponse
-from schemas.post import CommentOut, PostAssignCampaign, PostDetail, PostOut
+from schemas.post import CommentOut, PostAssignCampaign, PostDetail, PostOut, PostEdit
+from services.encryption import decrypt_token
+from services.facebook import delete_post as fb_delete_post, edit_post as fb_edit_post
 
 router = APIRouter(prefix="/posts", tags=["Posts"])
 _logger = logging.getLogger(__name__)
@@ -93,14 +95,52 @@ async def delete_post(
     db: AsyncSession = Depends(get_db),
     _: str = Depends(require_api_key),
 ):
-    """Soft-delete a post (sets active=False)."""
+    """Soft-delete a post (sets active=False) and delete it from Facebook permanently."""
     post = await db.get(Post, post_id)
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found.")
 
+    page_config = await db.get(PageConfig, post.page_config_id)
+    if not page_config:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Page config not found.")
+
+    plain_token = decrypt_token(page_config.access_token)
+    try:
+        await fb_delete_post(post.fb_post_id, plain_token)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=str(exc))
+
     post.active = False
     await db.commit()
-    return APIResponse(message="Post deactivated.")
+    return APIResponse(message="Post deactivated locally and deleted permanently from Facebook.")
+
+
+@router.patch("/{post_id}", response_model=APIResponse[PostOut])
+async def edit_post_endpoint(
+    post_id: int,
+    payload: PostEdit,
+    db: AsyncSession = Depends(get_db),
+    _: str = Depends(require_api_key),
+):
+    """Edit the caption/message of an existing post on Facebook and locally."""
+    post = await db.get(Post, post_id)
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found.")
+
+    page_config = await db.get(PageConfig, post.page_config_id)
+    if not page_config:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Page config not found.")
+
+    plain_token = decrypt_token(page_config.access_token)
+    try:
+        await fb_edit_post(post.fb_post_id, plain_token, payload.message)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=str(exc))
+
+    post.message = payload.message
+    await db.commit()
+    await db.refresh(post)
+    return APIResponse(message="Post edited successfully.", data=PostOut.model_validate(post))
 
 
 # ─── Comments sub-resource ───────────────────────────────────────────────────

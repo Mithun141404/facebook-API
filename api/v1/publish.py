@@ -2,10 +2,12 @@ from typing import List, Optional, Dict, Any
 """
 Publish router — text posts, photo posts (file upload), and scheduled posts.
 """
+import os
+import json
 import logging
-from datetime import timezone, datetime
+from datetime import timezone, datetime, timedelta
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.deps import require_api_key
@@ -33,13 +35,16 @@ async def _get_config(config_id: int, db: AsyncSession) -> PageConfig:
     return config
 
 
+IST = timezone(timedelta(hours=5, minutes=30))
+
+
 def _scheduled_unix(scheduled_at: Optional[datetime]) -> Optional[int]:
-    """Convert a naive UTC datetime to a Unix timestamp for Facebook."""
+    """Convert a naive IST datetime to a Unix timestamp for Facebook."""
     if not scheduled_at:
         return None
     if scheduled_at.tzinfo is None:
-        # Treat as UTC
-        return int(scheduled_at.replace(tzinfo=timezone.utc).timestamp())
+        # Treat naive datetimes as IST (UTC+5:30)
+        return int(scheduled_at.replace(tzinfo=IST).timestamp())
     return int(scheduled_at.timestamp())
 
 
@@ -48,10 +53,10 @@ def _scheduled_unix(scheduled_at: Optional[datetime]) -> Optional[int]:
 
 @router.post("/text", response_model=APIResponse[PublishResult])
 async def publish_text(
-    page_config_id: int = Form(..., alias="pageConfigId", description="DB ID of the page config"),
+    page_config_id: int = Form(..., description="DB ID of the page config"),
     message: str = Form(..., min_length=1, description="Post text content"),
-    campaign_id: Optional[int] = Form(default=None, alias="campaignId"),
-    scheduled_at: Optional[datetime] = Form(default=None, alias="scheduledAt", description="UTC datetime (ISO 8601) to schedule"),
+    campaign_id: Optional[int] = Form(default=None),
+    scheduled_at: Optional[datetime] = Form(default=None, description="UTC datetime (ISO 8601) to schedule"),
     db: AsyncSession = Depends(get_db),
     _: str = Depends(require_api_key),
 ):
@@ -77,7 +82,21 @@ async def publish_text(
     is_scheduled = bool(sched_unix)
 
     local_id: Optional[int] = None
-    if not is_scheduled and fb_post_id:
+    if is_scheduled:
+        # Persist to scheduled_posts.json so /publish/scheduled can list it
+        posts = _load_scheduled_posts()
+        posts.append({
+            "id": fb_post_id,
+            "page_config_id": page_config_id,
+            "campaign_id": campaign_id,
+            "message": message,
+            "scheduled_unix": sched_unix,
+            "scheduled_at": scheduled_at.isoformat() if scheduled_at else None,
+            "type": "text",
+            "state": "scheduled",
+        })
+        _save_scheduled_posts(posts)
+    elif fb_post_id:
         # Immediately create a local record so the CRM can reference it
         post = Post(
             fb_post_id=fb_post_id,
@@ -109,11 +128,11 @@ from typing import Optional
 
 @router.post("/photo", response_model=APIResponse[PublishResult])
 async def publish_photo(
-    page_config_id: int = Form(..., alias="pageConfigId", description="DB ID of the page config"),
+    page_config_id: int = Form(..., description="DB ID of the page config"),
     image: UploadFile = File(..., description="Image file to upload (JPEG, PNG, GIF, WEBP)"),
-    caption: Optional[str] = Form(default=None, description="Optional caption for the photo"),
-    campaign_id: Optional[int] = Form(default=None, alias="campaignId"),
-    scheduled_at: Optional[datetime] = Form(default=None, alias="scheduledAt", description="UTC datetime (ISO 8601) to schedule"),
+    message: Optional[str] = Form(default=None, description="Optional caption for the photo"),
+    campaign_id: Optional[int] = Form(default=None),
+    scheduled_at: Optional[datetime] = Form(default=None, description="UTC datetime (ISO 8601) to schedule"),
     db: AsyncSession = Depends(get_db),
     _: str = Depends(require_api_key),
 ):
@@ -147,7 +166,7 @@ async def publish_photo(
             access_token=plain_token,
             image_bytes=image_bytes,
             filename=image.filename or "photo.jpg",
-            caption=caption or "",
+            caption=message or "",
             scheduled_unix=sched_unix,
         )
     except ValueError as exc:
@@ -159,12 +178,26 @@ async def publish_photo(
     is_scheduled = bool(sched_unix)
 
     local_id: Optional[int] = None
-    if not is_scheduled and fb_post_id:
+    if is_scheduled:
+        # Persist to scheduled_posts.json so /publish/scheduled can list it
+        posts = _load_scheduled_posts()
+        posts.append({
+            "id": fb_post_id,
+            "page_config_id": page_config_id,
+            "campaign_id": campaign_id,
+            "message": message or "",
+            "scheduled_unix": sched_unix,
+            "scheduled_at": scheduled_at.isoformat() if scheduled_at else None,
+            "type": "photo",
+            "state": "scheduled",
+        })
+        _save_scheduled_posts(posts)
+    elif fb_post_id:
         post = Post(
             fb_post_id=fb_post_id,
             page_config_id=config.id,
             campaign_id=campaign_id,
-            message=caption or "",
+            message=message or "",
             active=True,
         )
         db.add(post)
@@ -181,3 +214,72 @@ async def publish_photo(
             message="Photo scheduled — it will go live at the specified time." if is_scheduled else "Photo published successfully.",
         ),
     )
+
+
+# ─── Scheduled Posts ──────────────────────────────────────────────────────────
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+JSON_FILE_PATH = os.path.join(BASE_DIR, "scheduled_posts.json")
+
+def _load_scheduled_posts() -> List[Dict[str, Any]]:
+    if not os.path.exists(JSON_FILE_PATH):
+        return []
+    with open(JSON_FILE_PATH, "r") as f:
+        try:
+            return json.load(f)
+        except json.JSONDecodeError:
+            return []
+
+def _save_scheduled_posts(posts: List[Dict[str, Any]]):
+    with open(JSON_FILE_PATH, "w") as f:
+        json.dump(posts, f, indent=4)
+
+@router.get("/scheduled", response_model=APIResponse[List[Dict[str, Any]]])
+async def list_scheduled_posts(page_config_id: Optional[int] = Query(None, description="Optional page config ID to filter by")):
+    """
+    List Scheduled Posts.
+    Reads scheduled_posts.json, optionally filters by page_config_id,
+    and safely strips the access_token.
+    """
+    posts = _load_scheduled_posts()
+    
+    if page_config_id is not None:
+        posts = [p for p in posts if str(p.get("page_config_id")) == str(page_config_id)]
+        
+    for p in posts:
+        p.pop("access_token", None)
+        
+    return APIResponse(data=posts, message="Scheduled posts retrieved.")
+
+@router.delete("/scheduled/{post_id}", response_model=APIResponse[None])
+async def remove_scheduled_post(post_id: str):
+    """
+    Remove Scheduled Post.
+    Only deletes the post if its current state is 'scheduled'.
+    """
+    posts = _load_scheduled_posts()
+    
+    post_index = None
+    for i, p in enumerate(posts):
+        if str(p.get("id", "")) == post_id or str(p.get("post_id", "")) == post_id:
+            post_index = i
+            break
+            
+    if post_index is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Scheduled post not found or already published"
+        )
+        
+    post = posts[post_index]
+    
+    if post.get("state") != "scheduled":
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Scheduled post not found or already published"
+        )
+        
+    posts.pop(post_index)
+    _save_scheduled_posts(posts)
+    
+    return APIResponse(message="Scheduled post removed.")

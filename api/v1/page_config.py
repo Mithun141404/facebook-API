@@ -46,12 +46,17 @@ async def create_page_config(
     _: str = Depends(require_api_key),
 ):
     """Create a new Facebook Page configuration."""
-    # Check for duplicate page_id
-    existing = await db.execute(select(PageConfig).where(PageConfig.page_id == payload.page_id))
+    # Check for duplicate page_id among active configs only
+    existing = await db.execute(
+        select(PageConfig).where(
+            PageConfig.page_id == payload.page_id,
+            PageConfig.active == True,
+        )
+    )
     if existing.scalar_one_or_none():
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"A page config for page_id '{payload.page_id}' already exists.",
+            detail=f"An active page config for page_id '{payload.page_id}' already exists.",
         )
 
     config = PageConfig(

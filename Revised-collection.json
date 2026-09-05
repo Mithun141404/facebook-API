@@ -1,0 +1,1573 @@
+{
+  "info": {
+    "_postman_id": "4589352d-4c65-44c2-9404-caea4d952b40",
+    "name": "My Collection",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56114636",
+    "_collection_link": "https://go.postman.co/collection/56114636-4589352d-4c65-44c2-9404-caea4d952b40?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Mindzen CRM Backend",
+      "item": [
+        {
+          "name": "Webhook Verification",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/webhook/meta?hub.mode=subscribe&hub.challenge=1158201444&hub.verify_token=testtoken123",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "webhook",
+                "meta"
+              ],
+              "query": [
+                {
+                  "key": "hub.mode",
+                  "value": "subscribe"
+                },
+                {
+                  "key": "hub.challenge",
+                  "value": "1158201444"
+                },
+                {
+                  "key": "hub.verify_token",
+                  "value": "testtoken123"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Webhook Receiver",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_08ux}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"object\": \"page\",\n  \"entry\": [\n    {\n      \"id\": \"1234567890\",\n      \"time\": 1700000000,\n      \"changes\": [\n        {\n          \"field\": \"leadgen\",\n          \"value\": {\n            \"ad_id\": \"11111\",\n            \"form_id\": \"22222\",\n            \"leadgen_id\": \"33333\",\n            \"created_time\": 1700000000,\n            \"page_id\": \"1234567890\",\n            \"adgroup_id\": \"44444\"\n          }\n        }\n      ]\n    }\n  ]\n}\n"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/webhook/meta",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "webhook",
+                "meta"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Leads",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/meta-leads/list?page=1&per_page=10",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "meta-leads",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "View Lead",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"lead_id\": 1\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/meta-leads/view",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "meta-leads",
+                "view"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reprocess Lead",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_08ux}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"lead_id\": 1\n}\n"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/meta-leads/reprocess",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "meta-leads",
+                "reprocess"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "General Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/meta-leads/stats",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "meta-leads",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Platform Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/meta-leads/platform-stats",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "meta-leads",
+                "platform-stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Engagement Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/meta-leads/engagement-stats",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "meta-leads",
+                "engagement-stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Campaigns",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0u60}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"campaignId\": 5\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/meta-campaigns/view",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "meta-campaigns",
+                "view"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "auth login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"KtBqZWTac4D6gbnUsYDJp6cHt2wB9ZMYfeSA2ONhl3w=\",\n    \"password\": \"vKsZ42fh9fvrUbde/WLWKA==\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Campaign List",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "publish post (text) (facebook)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0u60}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "x-api-key",
+                "value": "facebook-crm-dev-key-2025",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "pageConfigId",
+                  "value": "1",
+                  "type": "text",
+                  "uuid": "af8ab5d9-86a6-4650-9978-333b4770ed92"
+                },
+                {
+                  "key": "message",
+                  "value": "Sample text",
+                  "type": "text",
+                  "uuid": "3f5a01a9-6154-4e97-bf80-70e810a0efe0"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/publish/text",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "publish",
+                "text"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "page config update (facebook)",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accessToken\": \"EAAV439QMQ8kBR1KQkFkYMCxLcyPZAoGJclZBIXn8gDPeuJpEBCZC6HDhbHZAN7SShbgnpl0w37LUmCcXRyoFg2TYZCXIJP5tyrhZBMU5SVpCb6TADhyFiCZBbnyKNGPNT2xNd5Pv9dioxQKiiolxZACd6kMig7TYH3sKzN5e1VM7kZCc51pce7BHbHnkABdb6rc9UoiXjJQkduSfgcHRrMYmoBQEsUw3oKJfK1srpSBgTuMpe\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/page-configs/1",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "page-configs",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "publish post (photo) (facebook)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0u60}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "x-api-key",
+                "value": "facebook-crm-dev-key-2025",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "pageConfigId",
+                  "value": "1",
+                  "type": "text",
+                  "uuid": "4341ed11-0b2b-444f-83bc-47e9c724f16b"
+                },
+                {
+                  "key": "message",
+                  "value": "sample caption",
+                  "type": "text",
+                  "uuid": "5fdfe22c-680d-45a9-a3a0-b7d846c36b3c"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "7a3c1bb9-8e94-492a-9a74-be8164ccec44",
+                  "src": "/home/legend/Documents/Pictures/mfdoom.jpeg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/publish/photo",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "publish",
+                "photo"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List page configs (facebook)",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accessToken\": \"EAAV439QMQ8kBR1KQkFkYMCxLcyPZAoGJclZBIXn8gDPeuJpEBCZC6HDhbHZAN7SShbgnpl0w37LUmCcXRyoFg2TYZCXIJP5tyrhZBMU5SVpCb6TADhyFiCZBbnyKNGPNT2xNd5Pv9dioxQKiiolxZACd6kMig7TYH3sKzN5e1VM7kZCc51pce7BHbHnkABdb6rc9UoiXjJQkduSfgcHRrMYmoBQEsUw3oKJfK1srpSBgTuMpe\"\n}\n"
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/page-configs",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "page-configs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "post details",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvbXpjcm0vcHVibGljIiwiaWF0IjoxNzgzOTQwNDI1LCJleHAiOjE3ODM5NDQwMjUsIm5iZiI6MTc4Mzk0MDQyNSwianRpIjoiamN5NG1ITEFDY0E2MjhzMyIsInN1YiI6IjEyIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.gN_7IuLG_2IP2Yr8x5aApWaHfzpYL80DCCdO9QbfZ9E",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "x-api-key",
+                "value": "facebook-crm-dev-key-2025",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "pageConfigId",
+                  "value": "1",
+                  "type": "text",
+                  "uuid": "4341ed11-0b2b-444f-83bc-47e9c724f16b"
+                },
+                {
+                  "key": "message",
+                  "value": "sample caption",
+                  "type": "text",
+                  "uuid": "5fdfe22c-680d-45a9-a3a0-b7d846c36b3c"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "7a3c1bb9-8e94-492a-9a74-be8164ccec44",
+                  "src": "/home/legend/Documents/Pictures/mfdoom.jpeg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/facebook/posts/5",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "facebook",
+                "posts",
+                "5"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Scheduled post (Instagram)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0i6p}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"instagram_access_token\": \"EAAZCjXA1EWbYBRnTOZA6yO1dJUC47BO6ktZBYdGWYsgswjuMgxFGWZAYZANw1eRvsbZBJgi8aAtBKCVmwfatDEhCeWaxlCNAPz8dWZB8VmpNiUj66wRMxTQYZC5ZBiRS4nEuiH17smuYf4zE7wuIvsXmGORREU2oTCWfO6eyEW8zlU02cm2qfKZBnu34GBA6XKlgOIZBBEr\",\n  \"business_account_id\": \"17841422025834161\",\n  \"image_url\": \"https://www.wikihow.com/images/thumb/8/8f/Get-the-URL-for-Pictures-Draft-Step-6.jpg/v4-460px-Get-the-URL-for-Pictures-Draft-Step-6.jpg\",\n  \"caption\": \"Scheduled post caption\",\n  \"scheduled_datetime\": \"2026-07-20T14:55:00\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/instagram/scheduled/4",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "instagram",
+                "scheduled",
+                "4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fetch posts (Instagram)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"instagram_access_token\": \"your_access_token_here\",\n  \"business_account_id\": \"your_business_account_id\",\n  \"limit\": 20\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/instagram/fetch",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "instagram",
+                "fetch"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Publish Post (Instagram)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"image_url\": \"https://example.com/image.jpg\",\n  \"caption\": \"Your caption here\",\n  \"instagram_access_token\": \"your_access_token_here\",\n  \"business_account_id\": \"your_business_account_id\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/instagram/post",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "instagram",
+                "post"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Schedule post (Instagram)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0i6p}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"image_url\": \"https://example.com/image.jpg\",\n  \"caption\": \"Your caption here\",\n  \"instagram_access_token\": \"your_access_token_here\",\n  \"business_account_id\": \"your_business_account_id\",\n  \"scheduled_datetime\": \"2026-12-31T23:59:59\"\n}\n"
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/instagram/schedule",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "instagram",
+                "schedule"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Published post status (Instagram)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0i6p}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"post_id\": \"instagram_media_id_here\",\n  \"instagram_access_token\": \"your_access_token_here\"\n}\n"
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/instagram/status",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "instagram",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fetch comments (instagram)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"post_id\": \"instagram_media_id_here\",\n  \"instagram_access_token\": \"your_access_token_here\",\n  \"limit\": 25\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/instagram/comments",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "instagram",
+                "comments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List scheduled posts (instagram)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/instagram/scheduled/",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "instagram",
+                "scheduled",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Scheduled Post by ID (instagram)",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0i6p}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"instagram_access_token\": \"EAAZCjXA1EWbYBRnTOZA6yO1dJUC47BO6ktZBYdGWYsgswjuMgxFGWZAYZANw1eRvsbZBJgi8aAtBKCVmwfatDEhCeWaxlCNAPz8dWZB8VmpNiUj66wRMxTQYZC5ZBiRS4nEuiH17smuYf4zE7wuIvsXmGORREU2oTCWfO6eyEW8zlU02cm2qfKZBnu34GBA6XKlgOIZBBEr\",\n  \"business_account_id\": \"17841422025834161\",\n  \"image_url\": \"https://www.wikihow.com/images/thumb/8/8f/Get-the-URL-for-Pictures-Draft-Step-6.jpg/v4-460px-Get-the-URL-for-Pictures-Draft-Step-6.jpg\",\n  \"caption\": \"Scheduled post caption\",\n  \"scheduled_datetime\": \"2026-07-20T14:55:00\"\n}\n"
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/instagram/scheduled/4",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "instagram",
+                "scheduled",
+                "4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Page config (facebook)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_1b62}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pageName\": \"My Business Page\",\n  \"pageId\": \"1159738187222030\",\n  \"accessToken\": \"EAAV439QMQ8kBSDF6t8qpWcXnWMU3dTf2EspViLTSXRsdOQYAOwngahzJhsZAfdTvAjmmZAZCa6nsCkT6YIEcGcI1iTVBGn9YWm9o4ZCHDxSruRRkHGZCagB9ly2EzBi7vP71OlvIXpYQzXDA85zpazI3cZAIoM0APyppOlPHEdw9pZCJmTvZByH0aKqxyDJNZBOOfAYos\",\n  \"postLimit\": 25,\n  \"active\": true\n}\n\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/page-configs",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "page-configs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get page config (facebook)",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accessToken\": \"EAAV439QMQ8kBR1KQkFkYMCxLcyPZAoGJclZBIXn8gDPeuJpEBCZC6HDhbHZAN7SShbgnpl0w37LUmCcXRyoFg2TYZCXIJP5tyrhZBMU5SVpCb6TADhyFiCZBbnyKNGPNT2xNd5Pv9dioxQKiiolxZACd6kMig7TYH3sKzN5e1VM7kZCc51pce7BHbHnkABdb6rc9UoiXjJQkduSfgcHRrMYmoBQEsUw3oKJfK1srpSBgTuMpe\"\n}\n"
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/page-configs/1",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "page-configs",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete page config (facebook)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accessToken\": \"EAAV439QMQ8kBR1KQkFkYMCxLcyPZAoGJclZBIXn8gDPeuJpEBCZC6HDhbHZAN7SShbgnpl0w37LUmCcXRyoFg2TYZCXIJP5tyrhZBMU5SVpCb6TADhyFiCZBbnyKNGPNT2xNd5Pv9dioxQKiiolxZACd6kMig7TYH3sKzN5e1VM7kZCc51pce7BHbHnkABdb6rc9UoiXjJQkduSfgcHRrMYmoBQEsUw3oKJfK1srpSBgTuMpe\"\n}\n"
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/page-configs/1",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "page-configs",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fetch post from config (facebook)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accessToken\": \"EAAV439QMQ8kBR1KQkFkYMCxLcyPZAoGJclZBIXn8gDPeuJpEBCZC6HDhbHZAN7SShbgnpl0w37LUmCcXRyoFg2TYZCXIJP5tyrhZBMU5SVpCb6TADhyFiCZBbnyKNGPNT2xNd5Pv9dioxQKiiolxZACd6kMig7TYH3sKzN5e1VM7kZCc51pce7BHbHnkABdb6rc9UoiXjJQkduSfgcHRrMYmoBQEsUw3oKJfK1srpSBgTuMpe\"\n}\n"
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/page-configs/1/fetch",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "page-configs",
+                "1",
+                "fetch"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fetch all active pages (facebook)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accessToken\": \"EAAV439QMQ8kBR1KQkFkYMCxLcyPZAoGJclZBIXn8gDPeuJpEBCZC6HDhbHZAN7SShbgnpl0w37LUmCcXRyoFg2TYZCXIJP5tyrhZBMU5SVpCb6TADhyFiCZBbnyKNGPNT2xNd5Pv9dioxQKiiolxZACd6kMig7TYH3sKzN5e1VM7kZCc51pce7BHbHnkABdb6rc9UoiXjJQkduSfgcHRrMYmoBQEsUw3oKJfK1srpSBgTuMpe\"\n}\n"
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/page-configs/fetch-all",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "page-configs",
+                "fetch-all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List posts (facebook)",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_1b62}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pageName\": \"My Business Page\",\n  \"pageId\": \"123456789\",\n  \"accessToken\": \"EAAxxxxxxx...\",\n  \"postLimit\": 25,\n  \"active\": true\n}\n\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/posts",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "posts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get post (facebook)",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_1b62}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/posts/43",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "posts",
+                "43"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete post (facebook)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/posts/1",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "posts",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit caption (facebook)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_1b62}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"This is the updated caption for the post!\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/posts/1",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "posts",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Assign campaign (facebook)",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campaignId\": 5\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/posts/1/campaign",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "posts",
+                "1",
+                "campaign"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fetch comments (facebook)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/posts/1/comments",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "posts",
+                "1",
+                "comments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List campaigns (facebook)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/campaigns",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "campaigns"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create campaign (facebook)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Summer Sale 2025\",\n  \"description\": \"Marketing for summer items\",\n  \"active\": true\n}\n\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/campaigns",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "campaigns"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get campaign (facebook)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/campaigns/1",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "campaigns",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update campaign (facebook)",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Winter Sale 2025\",\n  \"description\": \"Updated description\",\n  \"active\": false\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/campaigns/1",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "campaigns",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete campaign (facebook)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/campaigns/1",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "campaigns",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get campaign stats (facebook)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/campaigns/1/stats",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "campaigns",
+                "1",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "fetch posts from campaign (facebook)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://crmcampaign.mindzen.com/api/facebook/campaigns/1/fetch",
+              "protocol": "https",
+              "host": [
+                "crmcampaign",
+                "mindzen",
+                "com"
+              ],
+              "path": [
+                "api",
+                "facebook",
+                "campaigns",
+                "1",
+                "fetch"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Get data",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "postman-echo.com/get",
+          "host": [
+            "postman-echo",
+            "com"
+          ],
+          "path": [
+            "get"
+          ]
+        },
+        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+      },
+      "response": []
+    },
+    {
+      "name": "Post data",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Successful POST request\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              ""
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"name\": \"Add your name in the body\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "postman-echo.com/post",
+          "host": [
+            "postman-echo",
+            "com"
+          ],
+          "path": [
+            "post"
+          ]
+        },
+        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "auth_secret_08ux",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0u60",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_0i6p",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_1b62",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_1b62",
+      "secret": true
+    }
+  ]
+}

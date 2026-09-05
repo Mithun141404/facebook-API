@@ -6,7 +6,7 @@ uvicorn[standard]==0.32.0
 sqlalchemy>=2.0.40        # 2.0.40+ required for Python 3.14 Union type fix
 greenlet
 aiosqlite==0.20.0
-asyncpg==0.31.0
+asyncpg==0.30.0
 
 # ─── Validation & Config ─────────────────────────────────────
 # NOTE: pydantic v2 pre-release required for Python 3.14 wheel support

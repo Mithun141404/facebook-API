@@ -42,6 +42,10 @@ class PostAssignCampaign(CamelModel):
     campaign_id: int = Field(..., description="ID of the campaign to assign")
 
 
+class PostEdit(CamelModel):
+    message: str = Field(..., description="The new text/caption for the post")
+
+
 class PostListFilters(CamelModel):
     page_config_id: Optional[int] = None
     campaign_id: Optional[int] = None

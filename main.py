@@ -125,7 +125,7 @@ async def health(db: AsyncSession = Depends(get_db)):
         )
 
 
-@app.get("/api/v1/info", tags=["Health"])
+@app.get("/info", tags=["Health"])
 async def info():
     return {
         "name": "Facebook CRM API",

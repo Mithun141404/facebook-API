@@ -4,7 +4,7 @@ from fastapi import APIRouter
 
 from api.v1 import page_config, posts, campaigns, publish, webhooks, contacts
 
-router = APIRouter(prefix="/api/v1")
+router = APIRouter()
 
 router.include_router(page_config.router)
 router.include_router(posts.router)
